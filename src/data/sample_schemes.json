@@ -1,0 +1,62 @@
+[
+  {
+    "id": "S-001",
+    "title": "Rural Livelihood Support",
+    "description": "Support for rural households with subsidized training and seed grants.",
+    "eligible_income_min": 0,
+    "eligible_income_max": 10000,
+    "eligible_states": ["karnataka", "maharashtra", "uttar pradesh"],
+    "tags": ["agriculture", "training", "income support"],
+    "benefits": ["training", "seed_grant"],
+    "documents": ["id_proof", "residence_proof"],
+    "apply_url": "https://gov.example/apply/S-001"
+  },
+  {
+    "id": "S-002",
+    "title": "Urban Housing Subsidy",
+    "description": "Subsidy for affordable housing in urban areas.",
+    "eligible_income_min": 0,
+    "eligible_income_max": 20000,
+    "eligible_states": ["karnataka", "tamil nadu"],
+    "tags": ["housing", "urban", "subsidy"],
+    "benefits": ["interest_subsidy"],
+    "documents": ["id_proof", "income_proof", "address_proof"],
+    "apply_url": "https://gov.example/apply/S-002"
+  },
+  {
+    "id": "S-003",
+    "title": "Women Entrepreneurship Grant",
+    "description": "Grant for women-led micro-enterprises.",
+    "eligible_income_min": 0,
+    "eligible_income_max": 50000,
+    "eligible_states": [],
+    "tags": ["women", "entrepreneurship", "micro"],
+    "benefits": ["grant"],
+    "documents": ["id_proof", "business_plan"],
+    "apply_url": "https://gov.example/apply/S-003"
+  },
+  {
+    "id": "S-004",
+    "title": "Senior Citizen Health Cover",
+    "description": "Health insurance subsidy for senior citizens.",
+    "eligible_income_min": 0,
+    "eligible_income_max": null,
+    "eligible_states": ["uttar pradesh", "bihar"],
+    "tags": ["health", "senior"],
+    "benefits": ["insurance_subsidy"],
+    "documents": ["id_proof", "age_proof"],
+    "apply_url": "https://gov.example/apply/S-004"
+  },
+  {
+    "id": "S-005",
+    "title": "Skill Development for Youth",
+    "description": "Short-term skill courses and placement assistance.",
+    "eligible_income_min": 0,
+    "eligible_income_max": 30000,
+    "eligible_states": [],
+    "tags": ["training", "youth", "employment"],
+    "benefits": ["course_fee", "placement"],
+    "documents": ["id_proof", "education_proof"],
+    "apply_url": "https://gov.example/apply/S-005"
+  }
+]

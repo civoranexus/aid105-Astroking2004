@@ -1,0 +1,24 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  python-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+      - name: Install backend deps
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r src/backend/requirements.txt
+      - name: Import sanity check
+        run: |
+          python -c "import importlib, sys; sys.path.append('src'); importlib.import_module('backend.main'); print('import ok')"
