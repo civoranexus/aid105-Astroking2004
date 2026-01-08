@@ -19,6 +19,15 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r src/backend/requirements.txt
+      - name: Install dev tooling
+        run: |
+          pip install flake8
+      - name: Lint (flake8)
+        run: |
+          python -m flake8 src tests --max-line-length=120
+      - name: Run tests (treat warnings as errors)
+        run: |
+          PYTHONWARNINGS=error python -m pytest -q
       - name: Import sanity check
         run: |
           python -c "import importlib, sys; sys.path.append('src'); importlib.import_module('backend.main'); print('import ok')"

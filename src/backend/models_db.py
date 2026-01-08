@@ -1,5 +1,6 @@
 from sqlalchemy import Column, Integer, String, Numeric, JSON, TIMESTAMP, func, Text
-from sqlalchemy.ext.declarative import declarative_base
+# Use new SQLAlchemy 2.x import path to avoid MovedIn20Warning
+from sqlalchemy.orm import declarative_base
 
 Base = declarative_base()
 

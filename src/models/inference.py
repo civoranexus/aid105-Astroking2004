@@ -1,5 +1,6 @@
 from typing import List, Dict
 
+
 def score_schemes(user: Dict, schemes: List[Dict]):
     """Simple hybrid rule-based scorer.
 

@@ -1,9 +1,4 @@
-import sys
 from fastapi.testclient import TestClient
-
-# Ensure src package is importable
-sys.path.append("src")
-
 from backend.main import app
 
 
