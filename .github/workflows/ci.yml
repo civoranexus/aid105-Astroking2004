@@ -9,6 +9,8 @@ on:
 jobs:
   python-check:
     runs-on: ubuntu-latest
+    env:
+      DATABASE_URL: sqlite:///./.data/ci_test.db
     steps:
       - uses: actions/checkout@v4
       - name: Set up Python
