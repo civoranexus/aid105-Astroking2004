@@ -1,0 +1,24 @@
+import axios from 'axios'
+
+const api = axios.create({ baseURL: '/api' })
+
+export interface Scheme {
+  id: number
+  name: string
+  description?: string
+}
+
+export interface UserInput {
+  age?: number
+  interests?: string[]
+}
+
+export async function getSchemes(): Promise<Scheme[]> {
+  const res = await api.get('/schemes')
+  return res.data
+}
+
+export async function getRecommendations(user: any): Promise<Scheme[]> {
+  const res = await api.post('/recommendations', user)
+  return res.data
+}
