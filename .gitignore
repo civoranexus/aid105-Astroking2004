@@ -4,6 +4,10 @@ __pycache__/
 *.pyc
 .pnp
 .pnp.js
+venv/
+.venv/
+env/
+.env/
 
 # Build outputs
 dist/

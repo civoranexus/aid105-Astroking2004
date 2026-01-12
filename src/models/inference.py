@@ -1,50 +1,41 @@
-from typing import List, Dict
+from typing import List, Dict, Any
 
-
-def score_schemes(user: Dict, schemes: List[Dict]):
-    """Simple hybrid rule-based scorer.
-
-    - Checks income eligibility and location match.
-    - Adds small boost for matching user needs/tags.
-    Returns list of {scheme, score, reasons} sorted by score desc.
+def score_schemes(user_data: Dict[str, Any], schemes: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
     """
-    scored = []
-    user_inc = user.get("income") or 0
-    user_state = (user.get("state") or "").lower()
-    needs = set([n.lower() for n in user.get("needs", [])])
+    Scores and filters schemes based on user profile criteria.
+    """
+    scored_results = []
+    
+    user_income = user_data.get("income") or 0
+    user_state = user_data.get("state")
+    user_needs = set(user_data.get("needs", []))
 
-    for s in schemes:
-        score = 0.0
-        reasons = []
+    for scheme in schemes:
+        score = 0
+        # 1. Basic Filtering (Hard Constraints)
+        # Check State Eligibility
+        eligible_states = scheme.get("eligible_states") or []
+        if eligible_states and user_state and user_state not in eligible_states:
+            continue
+            
+        # Check Income Eligibility
+        inc_min = scheme.get("eligible_income_min") or 0
+        inc_max = scheme.get("eligible_income_max") or float('inf')
+        if not (inc_min <= user_income <= inc_max):
+            continue
 
-        min_inc = s.get("eligible_income_min")
-        max_inc = s.get("eligible_income_max")
+        # 2. Scoring (Soft Constraints)
+        # Match tags/benefits against user needs
+        scheme_tags = set((scheme.get("tags") or []) + (scheme.get("benefits") or []))
+        matches = user_needs.intersection(scheme_tags)
+        score += len(matches) * 10  # Weight for direct need match
+        
+        # Add the scheme to results if it passed filters
+        scheme_copy = scheme.copy()
+        scheme_copy["match_score"] = score
+        scored_results.append(scheme_copy)
 
-        # Income eligibility (primary)
-        eligible = True
-        if min_inc is not None and user_inc < min_inc:
-            eligible = False
-        if max_inc is not None and user_inc > max_inc:
-            eligible = False
-
-        if eligible:
-            score += 0.5
-            reasons.append("income_match")
-
-        # Location match
-        states = [st.lower() for st in s.get("eligible_states", [])]
-        if states and user_state in states:
-            score += 0.3
-            reasons.append("location_match")
-
-        # Needs/tags overlap
-        tags = set([t.lower() for t in s.get("tags", [])])
-        overlap = len(needs & tags)
-        if overlap:
-            score += 0.2 * overlap
-            reasons.append("needs_match")
-
-        scored.append({"scheme": s, "score": round(score, 3), "reasons": reasons})
-
-    scored.sort(key=lambda x: x["score"], reverse=True)
-    return scored
+    # Sort by score descending
+    scored_results.sort(key=lambda x: x["match_score"], reverse=True)
+    
+    return scored_results

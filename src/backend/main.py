@@ -75,10 +75,29 @@ def get_schemes():
 
 
 @app.post("/recommendations")
-def recommendations(user: UserProfile, top_k: int = 5):
+def recommendations(user: UserProfile, top_k: int = 5, db: Session = Depends(get_db)):
     # Use model_dump for Pydantic v2 compatibility
     user_data = user.model_dump() if hasattr(user, "model_dump") else user.dict()
-    results = score_schemes(user_data, SCHEMES)
+    
+    # Combine JSON schemes with DB schemes for a comprehensive search
+    db_schemes = db.query(models_db.Scheme).all()
+    formatted_db_schemes = []
+    for s in db_schemes:
+        meta = s.metadata_json or {}
+        formatted_db_schemes.append({
+            "scheme_id": s.scheme_id,
+            "title": s.title,
+            "description": s.description,
+            "eligible_income_min": meta.get("eligible_income_min"),
+            "eligible_income_max": meta.get("eligible_income_max"),
+            "eligible_states": meta.get("eligible_states"),
+            "tags": s.tags,
+            "benefits": s.benefits
+        })
+
+    all_schemes = SCHEMES + formatted_db_schemes
+    results = score_schemes(user_data, all_schemes)
+    
     return {
         "user": user_data,
         "results": results[:top_k],
@@ -105,7 +124,7 @@ def create_user(user: UserProfile, db: Session = Depends(get_db)):
 
 @app.get("/users/{user_id}")
 def get_user(user_id: int, db: Session = Depends(get_db)):
-    u = db.query(models_db.User).filter(models_db.User.id == user_id).first()
+    u = db.query(models_db.User).filter_by(id=user_id).first()
     if not u:
         raise HTTPException(status_code=404, detail="User not found")
     return {
