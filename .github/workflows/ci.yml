@@ -23,7 +23,10 @@ jobs:
           pip install -r src/backend/requirements.txt
       - name: Install dev tooling
         run: |
-          pip install flake8 pytest httpx
+          pip install flake8 pytest httpx autopep8
+      - name: Format with autopep8
+        run: |
+          autopep8 --in-place --recursive --aggressive --aggressive src tests
       - name: Lint (flake8)
         run: |
           python -m flake8 src tests --max-line-length=120
