@@ -6,6 +6,7 @@ from pathlib import Path
 from contextlib import asynccontextmanager
 
 from src.models.inference import score_schemes
+from src.models.ai_service import generate_chat_response
 from src.backend.db import get_db, engine
 from src.backend import models_db
 from sqlalchemy.orm import Session
@@ -59,6 +60,10 @@ class SchemeIn(BaseModel):
     benefits: Optional[List[str]] = None
     documents: Optional[List[str]] = None
     apply_url: Optional[str] = None
+
+
+class ChatRequest(BaseModel):
+    query: str
 
 
 # Schemes are loaded during application lifespan startup
@@ -159,3 +164,17 @@ def create_scheme(scheme: SchemeIn, db: Session = Depends(get_db)):
     db.commit()
     db.refresh(db_scheme)
     return {"id": db_scheme.id, "scheme_id": db_scheme.scheme_id}
+
+
+@app.post("/chat")
+async def chat(request: ChatRequest, db: Session = Depends(get_db)):
+    """AI-powered chat endpoint to answer questions about schemes."""
+    # Fetch some schemes to provide context to the AI
+    db_schemes = db.query(models_db.Scheme).limit(10).all()
+    schemes_context = [
+        {"title": s.title, "description": s.description} 
+        for s in db_schemes
+    ]
+    
+    response = await generate_chat_response(request.query, schemes_context)
+    return {"query": request.query, "response": response}
