@@ -1,6 +1,6 @@
 import os
 from dotenv import load_dotenv
-import google.generativeai as genai
+from google import genai  # type: ignore
 from typing import List, Dict, Any
 
 load_dotenv()
@@ -8,8 +8,6 @@ load_dotenv()
 # Configure Gemini API
 # The user should set GOOGLE_API_KEY in their environment
 GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
-if GOOGLE_API_KEY:
-    genai.configure(api_key=GOOGLE_API_KEY)  # type: ignore
 
 async def generate_chat_response(query: str, context_schemes: List[Dict[str, Any]]) -> str:
     """
@@ -19,7 +17,7 @@ async def generate_chat_response(query: str, context_schemes: List[Dict[str, Any
         return "AI features are currently unavailable. Please set the GOOGLE_API_KEY environment variable."
 
     try:
-        model = genai.GenerativeModel('gemini-1.5-flash')  # type: ignore
+        client = genai.Client(api_key=GOOGLE_API_KEY)
         
         # Format context for the prompt to help the AI understand available schemes
         context_text = "\n".join([
@@ -36,7 +34,10 @@ async def generate_chat_response(query: str, context_schemes: List[Dict[str, Any
             f"Response:"
         )
 
-        response = await model.generate_content_async(prompt)
+        response = await client.aio.models.generate_content(
+            model='gemini-1.5-flash',
+            contents=prompt
+        )
         return response.text
     except Exception as e:
         return f"Error generating AI response: {str(e)}"
