@@ -68,3 +68,14 @@ def test_score_schemes_ranking_order():
     assert results[0]["match_score"] == 20
     assert results[1]["scheme_id"] == "partial_match"
     assert results[1]["match_score"] == 10
+
+def test_score_schemes_benefits_match():
+    """Test that benefits are also used for matching user needs."""
+    schemes = [
+        {"scheme_id": "benefit_match", "benefits": ["housing"], "tags": []}
+    ]
+    user = {"needs": ["housing"]}
+    results = score_schemes(user, schemes)
+    
+    assert len(results) == 1
+    assert results[0]["match_score"] == 10
