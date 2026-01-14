@@ -1,6 +1,5 @@
 import unittest
 from unittest.mock import patch, MagicMock
-import os
 from src.models.ai_service import generate_chat_response
 
 class TestAIService(unittest.IsolatedAsyncioTestCase):
