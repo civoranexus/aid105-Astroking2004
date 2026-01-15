@@ -25,7 +25,7 @@ def test_recommendations():
     body = r.json()
     assert "results" in body
     assert isinstance(body["results"], list)
-    # top result should be a dict with keys scheme and score
+    # top result should be a dict with keys scheme_id and match_score
     if body["results"]:
         top = body["results"][0]
-        assert "scheme" in top and "score" in top
+        assert "scheme_id" in top and "match_score" in top

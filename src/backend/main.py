@@ -1,7 +1,8 @@
-from fastapi import FastAPI, Depends, HTTPException
+from fastapi import FastAPI, Depends, HTTPException, Request
 from pydantic import BaseModel, Field
 from typing import List, Optional
 import json
+import logging
 from pathlib import Path
 from contextlib import asynccontextmanager
 
@@ -16,22 +17,28 @@ SCHEMES_FILE = DATA_DIR / "sample_schemes.json"
 
 # Initialize SCHEMES to ensure variable exists before lifespan runs
 SCHEMES = []
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """Lifespan context for startup/shutdown. Loads schemes into memory and ensures DB tables."""
     global SCHEMES
+    app.state.schemes = []
     try:
-        SCHEMES = json.loads(SCHEMES_FILE.read_text())
-    except Exception:
-        SCHEMES = []
+        if SCHEMES_FILE.exists():
+            app.state.schemes = json.loads(SCHEMES_FILE.read_text())
+            SCHEMES = app.state.schemes
+            logger.info(f"Loaded {len(app.state.schemes)} schemes from JSON.")
+    except Exception as e:
+        logger.error(f"Failed to load schemes from {SCHEMES_FILE}: {e}")
 
     # Ensure DB tables exist for local/dev
     try:
         models_db.Base.metadata.create_all(engine)
-    except Exception:
-        pass
+    except Exception as e:
+        logger.error(f"Database initialization failed: {e}")
 
     yield
 
@@ -81,8 +88,8 @@ def get_schemes():
 
 @app.post("/recommendations")
 def recommendations(user: UserProfile, top_k: int = 5, db: Session = Depends(get_db)):
-    # Use model_dump for Pydantic v2 compatibility
-    user_data = user.model_dump() if hasattr(user, "model_dump") else user.dict()
+    # Standardize on model_dump for Pydantic v2
+    user_data = user.model_dump()
     
     # Combine JSON schemes with DB schemes for a comprehensive search
     db_schemes = db.query(models_db.Scheme).all()
@@ -111,7 +118,7 @@ def recommendations(user: UserProfile, top_k: int = 5, db: Session = Depends(get
 
 @app.post("/users")
 def create_user(user: UserProfile, db: Session = Depends(get_db)):
-    data = user.model_dump() if hasattr(user, "model_dump") else user.dict()
+    data = user.model_dump()
     db_user = models_db.User(
         external_id=data.get("id"),
         name=data.get("name"),
@@ -146,7 +153,7 @@ def get_user(user_id: int, db: Session = Depends(get_db)):
 
 @app.post("/schemes/db")
 def create_scheme(scheme: SchemeIn, db: Session = Depends(get_db)):
-    data = scheme.model_dump() if hasattr(scheme, "model_dump") else scheme.dict()
+    data = scheme.model_dump()
     db_scheme = models_db.Scheme(
         scheme_id=data.get("scheme_id"),
         title=data.get("title"),
