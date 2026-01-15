@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Depends, HTTPException, Request
+from fastapi import FastAPI, Depends, HTTPException
 from pydantic import BaseModel, Field
 from typing import List, Optional
 import json
