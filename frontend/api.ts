@@ -15,10 +15,10 @@ export interface UserInput {
 
 export async function getSchemes(): Promise<Scheme[]> {
   const res = await api.get('/schemes')
-  return res.data
+  return Array.isArray(res.data) ? res.data : (res.data?.schemes || [])
 }
 
 export async function getRecommendations(user: any): Promise<Scheme[]> {
   const res = await api.post('/recommendations', user)
-  return res.data
+  return Array.isArray(res.data) ? res.data : (res.data?.recommendations || [])
 }

@@ -65,7 +65,7 @@ export default function App() {
                     </button>
                   </form>
 
-                  {results && (
+                  {Array.isArray(results) && (
                     <div>
                       <h3>Recommendations</h3>
                       {results.length === 0 ? (
