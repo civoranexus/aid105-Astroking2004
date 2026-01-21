@@ -15,11 +15,13 @@ def seed():
     try:
         schemes_data = json.loads(SCHEMES_FILE.read_text())
         for item in schemes_data:
+            # Handle both 'id' (from JSON) and 'scheme_id'
+            sid = item.get('scheme_id') or item.get('id')
             # Check if exists
-            exists = db.query(models_db.Scheme).filter_by(scheme_id=item['scheme_id']).first()
+            exists = db.query(models_db.Scheme).filter_by(scheme_id=sid).first()
             if not exists:
                 new_scheme = models_db.Scheme(
-                    scheme_id=item['scheme_id'],
+                    scheme_id=sid,
                     title=item.get('title'),
                     description=item.get('description'),
                     tags=item.get('tags', []),
@@ -27,6 +29,8 @@ def seed():
                     metadata_json={
                         "eligible_income_min": item.get("eligible_income_min"),
                         "eligible_income_max": item.get("eligible_income_max"),
+                        "eligible_age_min": item.get("eligible_age_min"),
+                        "eligible_age_max": item.get("eligible_age_max"),
                         "eligible_states": item.get("eligible_states"),
                     }
                 )

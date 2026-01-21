@@ -26,17 +26,30 @@ def import_csv_to_json():
         with open(CSV_FILE, mode='r', encoding='utf-8') as f:
             reader = csv.DictReader(f)
             for row in reader:
+                # Skip empty rows or rows missing critical identifiers
+                if not row.get("id") or not row.get("title"):
+                    continue
+
                 # Handle empty max income as None (null in JSON)
                 max_income = row.get("eligible_income_max", "").strip()
                 max_income_val = float(max_income) if max_income else None
+                min_income = row.get("eligible_income_min", "").strip()
+                min_income_val = float(min_income) if min_income else 0.0
+
+                max_age = row.get("eligible_age_max", "").strip()
+                max_age_val = int(max_age) if max_age else None
+                min_age = row.get("eligible_age_min", "").strip()
+                min_age_val = int(min_age) if min_age else 0
 
                 # Convert CSV row to Scheme format
                 scheme = {
                     "id": row.get("id", "").strip(),
                     "title": row.get("title", "").strip(),
                     "description": row.get("description", "").strip(),
-                    "eligible_income_min": float(row.get("eligible_income_min", 0)),
+                    "eligible_income_min": min_income_val,
                     "eligible_income_max": max_income_val,
+                    "eligible_age_min": min_age_val,
+                    "eligible_age_max": max_age_val,
                     "eligible_states": parse_list(row.get("eligible_states", "")),
                     "tags": parse_list(row.get("tags", "")),
                     "benefits": parse_list(row.get("benefits", "")),

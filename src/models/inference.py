@@ -15,12 +15,16 @@ def score_schemes(user_data: Dict[str, Any], schemes: List[Dict[str, Any]]) -> L
         # 1. Basic Filtering (Hard Constraints)
         # Check State Eligibility
         eligible_states = scheme.get("eligible_states") or []
-        if eligible_states and user_state and user_state not in eligible_states:
+        # Normalize state names to lowercase for comparison
+        eligible_states_lower = [s.lower() for s in eligible_states]
+        if eligible_states_lower and user_state and user_state.lower() not in eligible_states_lower:
             continue
             
         # Check Income Eligibility
         inc_min = scheme.get("eligible_income_min") or 0
-        inc_max = scheme.get("eligible_income_max") or float('inf')
+        inc_max = scheme.get("eligible_income_max")
+        if inc_max is None:
+            inc_max = float('inf')
         if not (inc_min <= user_income <= inc_max):
             continue
 

@@ -2,7 +2,7 @@ import os
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
-DATABASE_URL = os.environ.get("DATABASE_URL", "postgresql://civora:civora@db:5432/schemeassist")
+DATABASE_URL = os.environ.get("DATABASE_URL", "sqlite:///./schemeassist.db")
 
 # Synchronous engine for simplicity
 if DATABASE_URL.startswith("sqlite:"):

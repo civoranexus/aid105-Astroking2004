@@ -5,6 +5,8 @@
     "description": "Support for rural households with subsidized training and seed grants.",
     "eligible_income_min": 0,
     "eligible_income_max": 10000,
+    "eligible_age_min": 18,
+    "eligible_age_max": null,
     "eligible_states": [
       "karnataka",
       "maharashtra",
@@ -31,6 +33,8 @@
     "description": "Subsidy for affordable housing in urban areas.",
     "eligible_income_min": 0,
     "eligible_income_max": 20000,
+    "eligible_age_min": 18,
+    "eligible_age_max": null,
     "eligible_states": [
       "karnataka",
       "tamil nadu"
@@ -56,6 +60,8 @@
     "description": "Grant for women-led micro-enterprises.",
     "eligible_income_min": 0,
     "eligible_income_max": 50000,
+    "eligible_age_min": 18,
+    "eligible_age_max": null,
     "eligible_states": [],
     "tags": [
       "women",
@@ -77,6 +83,8 @@
     "description": "Health insurance subsidy for senior citizens.",
     "eligible_income_min": 0,
     "eligible_income_max": null,
+    "eligible_age_min": 60,
+    "eligible_age_max": null,
     "eligible_states": [
       "uttar pradesh",
       "bihar"
@@ -100,6 +108,8 @@
     "description": "Short-term skill courses and placement assistance.",
     "eligible_income_min": 0,
     "eligible_income_max": 30000,
+    "eligible_age_min": 18,
+    "eligible_age_max": 35,
     "eligible_states": [],
     "tags": [
       "training",
@@ -117,46 +127,32 @@
     "apply_url": "https://gov.example/apply/S-005"
   },
   {
-    "id": "",
-    "title": "",
-    "description": "",
+    "id": "S-006",
+    "title": "Missing Fisherman Relief",
+    "description": "Financial assistance for the families of fishermen missing at sea.",
     "eligible_income_min": 0.0,
     "eligible_income_max": null,
-    "eligible_states": [],
+    "eligible_age_min": 18,
+    "eligible_age_max": null,
+    "eligible_states": [
+      "tamil nadu",
+      "puducherry"
+    ],
     "tags": [
-      "Missing",
-      "Fisherman",
-      "Relief",
-      "Financial Assistance",
-      "Family"
+      "fisheries",
+      "relief",
+      "financial assistance"
     ],
     "benefits": [
-      "\u20b9 1",
-      "00",
-      "000",
-      "in two installments of \u20b9 50",
-      "000 each",
-      "as immediate relief assistance for the family (legal heir) of the missing fisherman. \ufeff Disbursal Initially",
-      "50% will be extended within 3 months from the date of receipt of the application from the family (legal heir). The family (legal heir) should approach this department for the release of the balance 50% of the relief which will be deposited in the bank in a joint account in the name of kin (legal heir) and the competent authority concerned. If no further information is received about the missing person",
-      "the balance amount will be released in favour of the next of kin (legal heir)",
-      "after the prescribed period of 9 months from the date of release of 1st part of lump sum. *In case of the return of the missing fishermen",
-      "the amount extended as compensation either \u20b9 50",
-      "000 or \u20b9 1",
-      "00",
-      "000 as the case may be",
-      "will be recovered by invoking an insurance bond."
+      "\u20b9 1,00,000 in two installments as immediate relief assistance.",
+      "50% disbursed within 3 months, balance after 9 months if person remains missing."
     ],
     "documents": [
-      "Photograph of the Family (Legal Heir) of the Missing Fisherman. Residential Certificate of the Missing Fishermen. Proof of Age of the Missing Fishermen. Declaration That the Missing Fisherman Was Not a Beneficiary of the Old Age Pension Scheme. Membership Certificate from the President/Administrator of Fishermen/Fisherwoman Co-operative Society. Electoral Identity Card (Attested Copy) Ration Card (Attested Copy) Panchayathar\u2019s Letter of Village Concerned Name",
-      "Relationship",
-      "and Address of the Legal Heir (Affidavit in \u20b9 5 Stamp Paper",
-      "Affixing as the Legal Heir Duly Signed in Before a Notary Public). \u2018No Claim\u2019 Certificate in Respect of Financial Assistance Extended by the Revenue Department Should Be Obtained From the Department of Revenue and Disaster Management. FIR and Non-traceable Certificate From Respective Station House Officer of Police Department. Statement of Next Kin of Missing Person",
-      "Statement of Panchayathars",
-      "Statement of Persons Who Have Lastly Seen the Missing Person. Advertisement/newspaper Report of the Missing Person in Gazette in Tamil/local Newspaper",
-      "Municipality/ Commune Panchayat Office",
-      "Ration Shop",
-      "and Police Station in the Vernacular Language."
+      "Photograph of Legal Heir",
+      "Residential Certificate",
+      "FIR and Non-traceable Certificate",
+      "Affidavit on \u20b9 5 Stamp Paper"
     ],
-    "apply_url": ""
+    "apply_url": "https://gov.example/apply/S-006"
   }
 ]
