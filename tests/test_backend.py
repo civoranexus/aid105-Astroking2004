@@ -23,9 +23,8 @@ def test_recommendations():
     r = client.post("/recommendations", json=user)
     assert r.status_code == 200
     body = r.json()
-    assert "results" in body
-    assert isinstance(body["results"], list)
-    # top result should be a dict with keys scheme_id and match_score
-    if body["results"]:
-        top = body["results"][0]
+    assert isinstance(body, list)
+    # top result should be a dict with keys id and name
+    if body:
+        top = body[0]
         assert "scheme_id" in top and "match_score" in top

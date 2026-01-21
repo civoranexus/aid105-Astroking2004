@@ -72,11 +72,10 @@ def test_user_lifecycle_and_recommendation():
     # 4. Get recommendations
     reco_res = client.post("/recommendations", json=user_payload)
     assert reco_res.status_code == 200
-    data = reco_res.json()
+    results = reco_res.json()
     
     # Check if our added scheme is in the results
-    results = data["results"]
-    scheme_ids = [s["scheme_id"] for s in results]
+    scheme_ids = [s["id"] for s in results]
     assert "SCH_TEST_01" in scheme_ids
 
 def test_get_user_not_found():
@@ -91,4 +90,4 @@ def test_recommendations_no_matches():
     user_payload = {"income": 9999999, "state": "Mars", "needs": ["nothing"]}
     response = client.post("/recommendations", json=user_payload)
     assert response.status_code == 200
-    assert len(response.json()["results"]) == 0
+    assert len(response.json()) == 0

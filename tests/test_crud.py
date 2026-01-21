@@ -48,4 +48,4 @@ def test_create_scheme_and_recommend():
     r2 = client.post("/recommendations", json=user)
     assert r2.status_code == 200
     res = r2.json()
-    assert isinstance(res.get("results"), list)
+    assert isinstance(res, list)
