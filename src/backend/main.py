@@ -157,9 +157,16 @@ def recommendations(user: UserProfile, request: Request, top_k: int = 5, db: Ses
     if user_data.get("state"):
         user_data["state"] = user_data["state"].lower()
 
-    logger.info(f"Processing recommendations for user: {user_data.get('name')} (Age: {user_data.get('age')}, Income: {user_data.get('income')}) in {user_data.get('state')}")
+    user_name = user_data.get('name')
+    user_age = user_data.get('age')
+    user_income = user_data.get('income')
+    user_state = user_data.get('state')
+    logger.info(
+        f"Processing recommendations for user: {user_name} "
+        f"(Age: {user_age}, Income: {user_income}) in {user_state}"
+    )
 
-    # Combine JSON schemes with DB schemes for a comprehensive search
+    # Combine JSON schemes with DB schemes
     json_schemes = getattr(request.app.state, "schemes", [])
     logger.info(f"Found {len(json_schemes)} schemes in app state.")
     
@@ -180,9 +187,7 @@ def recommendations(user: UserProfile, request: Request, top_k: int = 5, db: Ses
             "title": s.title,
             "description": s.description,
             "eligible_income_min": meta.get("eligible_income_min"),
-            "eligible_income_max": meta.get(
-                "eligible_income_max"
-            ),
+            "eligible_income_max": meta.get("eligible_income_max"),
             "eligible_age_min": meta.get("eligible_age_min"),
             "eligible_age_max": meta.get("eligible_age_max"),
             "eligible_states": meta.get("eligible_states"),
