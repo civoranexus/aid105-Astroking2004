@@ -180,7 +180,9 @@ def recommendations(user: UserProfile, request: Request, top_k: int = 5, db: Ses
             "title": s.title,
             "description": s.description,
             "eligible_income_min": meta.get("eligible_income_min"),
-            "eligible_income_max": meta.get("eligible_income_max"),
+            "eligible_income_max": meta.get(
+                "eligible_income_max"
+            ),
             "eligible_age_min": meta.get("eligible_age_min"),
             "eligible_age_max": meta.get("eligible_age_max"),
             "eligible_states": meta.get("eligible_states"),
