@@ -10,7 +10,9 @@ export interface Scheme {
 
 export interface UserInput {
   age?: number
-  interests?: string[]
+  income?: number
+  state?: string
+  needs?: string[]
 }
 
 export async function getSchemes(): Promise<Scheme[]> {

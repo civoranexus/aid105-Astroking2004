@@ -11,7 +11,7 @@ import sys
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 
 from src.models.inference import score_schemes
-from src.models.ai_service import generate_chat_response
+from src.models.ai_service import generate_chat_response, MODEL_NAME
 from src.backend.db import get_db, engine
 from src.backend import models_db
 from sqlalchemy.orm import Session
@@ -284,4 +284,4 @@ async def chat(request: ChatRequest, db: Session = Depends(get_db)):
     ]
     
     response = await generate_chat_response(request.query, schemes_context)
-    return {"query": request.query, "response": response}
+    return {"query": request.query, "response": response, "model": MODEL_NAME}

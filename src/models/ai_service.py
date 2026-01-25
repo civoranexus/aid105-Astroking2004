@@ -8,6 +8,7 @@ load_dotenv()
 # Configure Gemini API
 # The user should set GOOGLE_API_KEY in their environment
 GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
+MODEL_NAME = os.getenv("MODEL_NAME", "gemini-2.5-flash")
 
 async def generate_chat_response(query: str, context_schemes: List[Dict[str, Any]]) -> str:
     """
@@ -35,9 +36,11 @@ async def generate_chat_response(query: str, context_schemes: List[Dict[str, Any
         )
 
         response = await client.aio.models.generate_content(
-            model='gemini-1.5-flash',
+            model=MODEL_NAME,
             contents=prompt
         )
-        return response.text
+        # Ensure we always return a string (Pylance type safety)
+        text = getattr(response, "text", None)
+        return text if isinstance(text, str) and text else "No AI response available."
     except Exception as e:
         return f"Error generating AI response: {str(e)}"

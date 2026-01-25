@@ -8,6 +8,9 @@ export default function App() {
   const [schemes, setSchemes] = useState<Scheme[]>([])
   const [loading, setLoading] = useState(false)
   const [userAge, setUserAge] = useState<number | ''>('')
+  const [userIncome, setUserIncome] = useState<number | ''>('')
+  const [userState, setUserState] = useState<string>('')
+  const [userNeedsText, setUserNeedsText] = useState<string>('')
   const [results, setResults] = useState<Scheme[] | null>(null)
 
   useEffect(() => {
@@ -18,7 +21,17 @@ export default function App() {
     e.preventDefault()
     setLoading(true)
     try {
-      const user = { age: userAge === '' ? undefined : Number(userAge) }
+      const user = {
+        age: userAge === '' ? undefined : Number(userAge),
+        income: userIncome === '' ? undefined : Number(userIncome),
+        state: userState ? userState : undefined,
+        needs: userNeedsText
+          ? userNeedsText
+              .split(',')
+              .map((s) => s.trim())
+              .filter(Boolean)
+          : []
+      }
       const recs = await getRecommendations(user)
       setResults(recs)
     } catch (err) {
@@ -58,6 +71,33 @@ export default function App() {
                         value={userAge}
                         onChange={(e) => setUserAge(e.target.value === '' ? '' : Number(e.target.value))}
                         min={0}
+                      />
+                    </label>
+                    <label>
+                      Income:
+                      <input
+                        type="number"
+                        value={userIncome}
+                        onChange={(e) => setUserIncome(e.target.value === '' ? '' : Number(e.target.value))}
+                        min={0}
+                      />
+                    </label>
+                    <label>
+                      State:
+                      <input
+                        type="text"
+                        value={userState}
+                        onChange={(e) => setUserState(e.target.value)}
+                        placeholder="e.g. Karnataka"
+                      />
+                    </label>
+                    <label>
+                      Needs (comma-separated):
+                      <input
+                        type="text"
+                        value={userNeedsText}
+                        onChange={(e) => setUserNeedsText(e.target.value)}
+                        placeholder="e.g. training, housing"
                       />
                     </label>
                     <button type="submit" disabled={loading}>
