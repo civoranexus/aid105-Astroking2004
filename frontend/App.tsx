@@ -45,9 +45,12 @@ export default function App() {
     <BrowserRouter>
       <div className="app">
         <header>
-          <h1>
-            <Link to="/">SchemeAssist</Link>
-          </h1>
+          <div className="header-left">
+            <img src="/logos/short_logo.png" alt="SchemeAssist" className="logo" />
+            <h1>
+              <Link to="/">SchemeAssist</Link>
+            </h1>
+          </div>
           <p>Browse schemes and get recommendations.</p>
         </header>
 
