@@ -3,9 +3,16 @@ import axios from 'axios'
 const api = axios.create({ baseURL: '/api' })
 
 export interface Scheme {
-  id: number
+  id: string
   name: string
   description?: string
+  eligibility?: string
+  application?: string
+  level?: string
+  schemeCategory?: string
+  tags?: string[]
+  benefits?: string[]
+  documents?: string[]
 }
 
 export interface UserInput {

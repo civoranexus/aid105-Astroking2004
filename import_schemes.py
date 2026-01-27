@@ -27,34 +27,27 @@ def import_csv_to_json():
             reader = csv.DictReader(f)
             for row in reader:
                 # Skip empty rows or rows missing critical identifiers
-                if not row.get("id") or not row.get("title"):
+                if not row.get("slug") or not row.get("scheme_name"):
                     continue
-
-                # Handle empty max income as None (null in JSON)
-                max_income = row.get("eligible_income_max", "").strip()
-                max_income_val = float(max_income) if max_income else None
-                min_income = row.get("eligible_income_min", "").strip()
-                min_income_val = float(min_income) if min_income else 0.0
-
-                max_age = row.get("eligible_age_max", "").strip()
-                max_age_val = int(max_age) if max_age else None
-                min_age = row.get("eligible_age_min", "").strip()
-                min_age_val = int(min_age) if min_age else 0
 
                 # Convert CSV row to Scheme format
                 scheme = {
-                    "id": row.get("id", "").strip(),
-                    "title": row.get("title", "").strip(),
-                    "description": row.get("description", "").strip(),
-                    "eligible_income_min": min_income_val,
-                    "eligible_income_max": max_income_val,
-                    "eligible_age_min": min_age_val,
-                    "eligible_age_max": max_age_val,
-                    "eligible_states": parse_list(row.get("eligible_states", "")),
+                    "id": row.get("slug", "").strip(),
+                    "title": row.get("scheme_name", "").strip(),
+                    "description": row.get("details", "").strip(),
+                    "eligible_income_min": 0,
+                    "eligible_income_max": None,
+                    "eligible_age_min": 0,
+                    "eligible_age_max": None,
+                    "eligible_states": [],
                     "tags": parse_list(row.get("tags", "")),
-                    "benefits": parse_list(row.get("benefits", "")),
+                    "benefits": [row.get("benefits", "").strip()] if row.get("benefits", "").strip() else [],
                     "documents": parse_list(row.get("documents", "")),
-                    "apply_url": row.get("apply_url", "").strip()
+                    "apply_url": "",
+                    "eligibility": row.get("eligibility", "").strip(),
+                    "application": row.get("application", "").strip(),
+                    "level": row.get("level", "").strip(),
+                    "schemeCategory": row.get("schemeCategory", "").strip()
                 }
                 new_schemes.append(scheme)
                 

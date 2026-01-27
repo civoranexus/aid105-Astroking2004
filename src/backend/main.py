@@ -82,6 +82,10 @@ class SchemeIn(BaseModel):
     scheme_id: str
     title: Optional[str] = None
     description: Optional[str] = None
+    eligibility: Optional[str] = None
+    application: Optional[str] = None
+    level: Optional[str] = None
+    schemeCategory: Optional[str] = None
     eligible_income_min: Optional[float] = None
     eligible_income_max: Optional[float] = None
     eligible_age_min: Optional[int] = None
@@ -149,7 +153,7 @@ def get_schemes(request: Request):
 
 
 @app.post("/recommendations")
-def recommendations(user: UserProfile, request: Request, top_k: int = 5, db: Session = Depends(get_db)):
+def recommendations(user: UserProfile, request: Request, top_k: int = 5):
     # Standardize on model_dump for Pydantic v2
     user_data = user.model_dump()
     
@@ -166,7 +170,7 @@ def recommendations(user: UserProfile, request: Request, top_k: int = 5, db: Ses
         f"(Age: {user_age}, Income: {user_income}) in {user_state}"
     )
 
-    # Combine JSON schemes with DB schemes
+    # Use JSON schemes loaded in memory (primary source)
     json_schemes = getattr(request.app.state, "schemes", [])
     logger.info(f"Found {len(json_schemes)} schemes in app state.")
     
@@ -178,24 +182,7 @@ def recommendations(user: UserProfile, request: Request, top_k: int = 5, db: Ses
             s_copy["scheme_id"] = s_copy.pop("id")
         standardized_json.append(s_copy)
 
-    db_schemes = db.query(models_db.Scheme).all()
-    formatted_db_schemes = []
-    for s in db_schemes:
-        meta = s.metadata_json or {}
-        formatted_db_schemes.append({
-            "scheme_id": s.scheme_id,
-            "title": s.title,
-            "description": s.description,
-            "eligible_income_min": meta.get("eligible_income_min"),
-            "eligible_income_max": meta.get("eligible_income_max"),
-            "eligible_age_min": meta.get("eligible_age_min"),
-            "eligible_age_max": meta.get("eligible_age_max"),
-            "eligible_states": meta.get("eligible_states"),
-            "tags": s.tags,
-            "benefits": s.benefits
-        })
-
-    all_schemes = standardized_json + formatted_db_schemes
+    all_schemes = standardized_json
     logger.info(f"Total schemes to score: {len(all_schemes)}")
     
     results = score_schemes(user_data, all_schemes)
@@ -207,7 +194,14 @@ def recommendations(user: UserProfile, request: Request, top_k: int = 5, db: Ses
         transformed.append({
             "id": r.get("scheme_id") or r.get("id"),
             "name": r.get("title"),
-            "description": r.get("description")
+            "description": r.get("description"),
+            "eligibility": r.get("eligibility"),
+            "application": r.get("application"),
+            "level": r.get("level"),
+            "schemeCategory": r.get("schemeCategory"),
+            "tags": r.get("tags"),
+            "benefits": r.get("benefits"),
+            "documents": r.get("documents")
         })
     
     return transformed
@@ -256,6 +250,10 @@ def create_scheme(scheme: SchemeIn, db: Session = Depends(get_db)):
         scheme_id=data.get("scheme_id"),
         title=data.get("title"),
         description=data.get("description"),
+        eligibility=data.get("eligibility"),
+        application=data.get("application"),
+        level=data.get("level"),
+        scheme_category=data.get("schemeCategory"),
         metadata_json={
             "eligible_income_min": data.get("eligible_income_min"),
             "eligible_income_max": data.get("eligible_income_max"),

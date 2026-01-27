@@ -116,9 +116,13 @@ export default function App() {
                       ) : (
                         <ul>
                           {results.map((r) => (
-                            <li key={r.id}>
-                              <strong>{r.name}</strong>
-                              <div className="muted">{r.description}</div>
+                            <li key={r.id} style={{ marginBottom: '1rem', borderBottom: '1px solid #eee', paddingBottom: '0.5rem' }}>
+                              <Link to={`/schemes/${r.id}`}>
+                                <strong>{r.name}</strong>
+                              </Link>
+                              <div style={{ fontSize: '0.9rem', color: '#555' }}>{r.description}</div>
+                              {r.schemeCategory && <span className="tag" style={{ fontSize: '0.75rem', background: '#e0e0e0', padding: '2px 6px', borderRadius: '4px', marginRight: '5px' }}>{r.schemeCategory}</span>}
+                              {r.level && <span className="tag" style={{ fontSize: '0.75rem', background: '#d1e7dd', padding: '2px 6px', borderRadius: '4px' }}>{r.level}</span>}
                             </li>
                           ))}
                         </ul>
