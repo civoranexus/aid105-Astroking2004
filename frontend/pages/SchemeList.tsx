@@ -9,7 +9,7 @@ export default function SchemeList({ schemes }: { schemes: Scheme[] }) {
         {schemes.map((s) => (
           <li key={s.id}>
             <Link to={`/schemes/${s.id}`}>
-              <strong>{s.name}</strong>
+              <strong>{s.title}</strong>
             </Link>
             <div className="muted">{s.description}</div>
           </li>

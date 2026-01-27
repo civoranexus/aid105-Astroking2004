@@ -15,7 +15,7 @@ export default function SchemeDetail({ schemes }: { schemes: Scheme[] }) {
 
   return (
     <div>
-      <h3>{scheme.name}</h3>
+      <h3>{scheme.title}</h3>
       <p className="muted">{scheme.description}</p>
       
       {scheme.level && (

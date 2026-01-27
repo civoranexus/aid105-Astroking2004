@@ -12,8 +12,8 @@ vi.mock('./api', () => ({
 describe('App', () => {
   beforeEach(() => {
     ;(getSchemes as unknown as vi.Mock).mockResolvedValue([
-      { id: 1, name: 'Scheme A', description: 'Desc A' },
-      { id: 2, name: 'Scheme B', description: 'Desc B' }
+      { id: '1', title: 'Scheme A', description: 'Desc A' },
+      { id: '2', title: 'Scheme B', description: 'Desc B' }
     ])
   })
 

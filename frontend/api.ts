@@ -4,7 +4,7 @@ const api = axios.create({ baseURL: '/api' })
 
 export interface Scheme {
   id: string
-  name: string
+  title: string
   description?: string
   eligibility?: string
   application?: string
