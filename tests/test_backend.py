@@ -15,7 +15,6 @@ def test_recommendations():
     user = {
         "id": "u1",
         "name": "Test User",
-        "age": 30,
         "income": 8000,
         "state": "Karnataka",
         "needs": ["training"]

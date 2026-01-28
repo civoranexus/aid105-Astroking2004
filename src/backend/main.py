@@ -71,7 +71,6 @@ app.add_middleware(
 class UserProfile(BaseModel):
     id: Optional[str] = None
     name: Optional[str] = None
-    age: Optional[int] = None
     income: Optional[float] = None
     state: Optional[str] = None
     district: Optional[str] = None
@@ -88,8 +87,6 @@ class SchemeIn(BaseModel):
     schemeCategory: Optional[str] = None
     eligible_income_min: Optional[float] = None
     eligible_income_max: Optional[float] = None
-    eligible_age_min: Optional[int] = None
-    eligible_age_max: Optional[int] = None
     eligible_states: Optional[List[str]] = None
     tags: Optional[List[str]] = None
     benefits: Optional[List[str]] = None
@@ -162,12 +159,12 @@ def recommendations(user: UserProfile, request: Request, top_k: int = 5):
         user_data["state"] = user_data["state"].lower()
 
     user_name = user_data.get('name')
-    user_age = user_data.get('age')
     user_income = user_data.get('income')
     user_state = user_data.get('state')
+    user_needs = user_data.get('needs', [])
     logger.info(
         f"Processing recommendations for user: {user_name} "
-        f"(Age: {user_age}, Income: {user_income}) in {user_state}"
+        f"(Income: {user_income}, State: {user_state}, Needs: {user_needs})"
     )
 
     # Use JSON schemes loaded in memory (primary source)

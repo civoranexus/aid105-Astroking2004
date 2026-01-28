@@ -43,7 +43,6 @@ def test_user_lifecycle_and_recommendation():
     user_payload = {
         "id": "user_001",
         "name": "Test User",
-        "age": 30,
         "income": 45000.0,
         "state": "Karnataka",
         "district": "Bangalore",

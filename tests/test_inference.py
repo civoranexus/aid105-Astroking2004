@@ -33,7 +33,8 @@ def test_score_schemes_filtering():
     # Only "match" should pass the hard filters
     assert len(results) == 1
     assert results[0]["scheme_id"] == "match"
-    assert results[0]["match_score"] == 10
+    # Base score (10) + health match (15) + state match bonus (5) = 30
+    assert results[0]["match_score"] == 30
 
 def test_score_schemes_empty_input():
     assert score_schemes({}, []) == []
@@ -42,7 +43,8 @@ def test_score_schemes_no_needs_match():
     schemes = [{"scheme_id": "S1", "tags": ["health"]}]
     user = {"needs": ["education"]}
     results = score_schemes(user, schemes)
-    assert results[0]["match_score"] == 0
+    # Base score for passing filters (no need matches)
+    assert results[0]["match_score"] == 10
 
 def test_score_schemes_income_min_filter():
     """Test that the lower bound of income eligibility is respected."""
@@ -65,9 +67,11 @@ def test_score_schemes_ranking_order():
     
     assert len(results) == 2
     assert results[0]["scheme_id"] == "full_match"
-    assert results[0]["match_score"] == 20
+    # Base (10) + 2 matches * 15 = 40
+    assert results[0]["match_score"] == 40
     assert results[1]["scheme_id"] == "partial_match"
-    assert results[1]["match_score"] == 10
+    # Base (10) + 1 match * 15 = 25
+    assert results[1]["match_score"] == 25
 
 def test_score_schemes_benefits_match():
     """Test that benefits are also used for matching user needs."""
@@ -78,4 +82,5 @@ def test_score_schemes_benefits_match():
     results = score_schemes(user, schemes)
     
     assert len(results) == 1
-    assert results[0]["match_score"] == 10
+    # Base (10) + housing benefit match (15) = 25
+    assert results[0]["match_score"] == 25

@@ -9,7 +9,6 @@ def test_create_user_and_get():
     payload = {
         "id": "u100",
         "name": "Bob",
-        "age": 40,
         "income": 15000,
         "state": "Karnataka",
         "needs": ["training"]

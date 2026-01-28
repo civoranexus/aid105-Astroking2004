@@ -16,7 +16,6 @@ export interface Scheme {
 }
 
 export interface UserInput {
-  age?: number
   income?: number
   state?: string
   needs?: string[]
