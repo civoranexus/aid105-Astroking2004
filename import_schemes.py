@@ -6,7 +6,7 @@ from typing import List
 # Define paths
 BASE_DIR = Path(__file__).resolve().parent
 DATA_FILE = BASE_DIR / "src" / "data" / "sample_schemes.json"
-CSV_FILE = BASE_DIR / "updated_data.csv"
+CSV_FILE = BASE_DIR / "govt_schemes.csv"
 
 def parse_list(value: str) -> List[str]:
     """Helper to parse comma-separated strings into lists."""
