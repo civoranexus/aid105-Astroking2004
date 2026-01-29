@@ -5,20 +5,30 @@ import SchemeList from './pages/SchemeList'
 import SchemeDetail from './pages/SchemeDetail'
 
 export default function App() {
-  const [schemes, setSchemes] = useState<Scheme[]>([])
+  const [allSchemes, setAllSchemes] = useState<Scheme[]>([])
+  const [displayedSchemes, setDisplayedSchemes] = useState<Scheme[]>([])
   const [loading, setLoading] = useState(false)
   const [userIncome, setUserIncome] = useState<number | ''>('')
   const [userState, setUserState] = useState<string>('')
   const [userNeedsText, setUserNeedsText] = useState<string>('')
-  const [results, setResults] = useState<Scheme[] | null>(null)
+  const [isFiltered, setIsFiltered] = useState(false)
+  const [currentPage, setCurrentPage] = useState(1)
+  const schemesPerPage = 20
 
   useEffect(() => {
-    getSchemes().then(setSchemes).catch(() => setSchemes([]))
+    getSchemes().then((data) => {
+      setAllSchemes(data)
+      setDisplayedSchemes(data)
+    }).catch(() => {
+      setAllSchemes([])
+      setDisplayedSchemes([])
+    })
   }, [])
 
   async function onRecommend(e: React.FormEvent) {
     e.preventDefault()
     setLoading(true)
+    setCurrentPage(1)
     try {
       const user = {
         income: userIncome === '' ? undefined : Number(userIncome),
@@ -31,13 +41,30 @@ export default function App() {
           : []
       }
       const recs = await getRecommendations(user)
-      setResults(recs)
+      setDisplayedSchemes(recs)
+      setIsFiltered(true)
     } catch (err) {
-      setResults([])
+      setDisplayedSchemes([])
+      setIsFiltered(true)
     } finally {
       setLoading(false)
     }
   }
+
+  function clearFilters() {
+    setUserIncome('')
+    setUserState('')
+    setUserNeedsText('')
+    setDisplayedSchemes(allSchemes)
+    setIsFiltered(false)
+    setCurrentPage(1)
+  }
+
+  // Pagination logic
+  const totalPages = Math.ceil(displayedSchemes.length / schemesPerPage)
+  const startIndex = (currentPage - 1) * schemesPerPage
+  const endIndex = startIndex + schemesPerPage
+  const currentSchemes = displayedSchemes.slice(startIndex, endIndex)
 
   return (
     <BrowserRouter>
@@ -58,14 +85,11 @@ export default function App() {
             element={
               <main>
                 <section>
-                  <h2>Available schemes</h2>
-                  <SchemeList schemes={schemes} />
-                </section>
-
-                <section>
-                  <h2>Get Recommendations</h2>
+                  <h2>Find Schemes</h2>
                   <p style={{ fontSize: '0.9rem', color: '#666', marginBottom: '1rem' }}>
-                    Fill in your details to find schemes that match your profile. All fields are optional.
+                    {isFiltered 
+                      ? 'Showing filtered results. Clear filters to see all schemes.' 
+                      : 'Browse all available schemes or use filters below to find personalized recommendations.'}
                   </p>
                   <form onSubmit={onRecommend} className="form">
                     <label>
@@ -99,113 +123,68 @@ export default function App() {
                       />
                       <small style={{ fontSize: '0.8rem', color: '#888' }}>Optional - helps prioritize relevant schemes</small>
                     </label>
-                    <button type="submit" disabled={loading}>
-                      {loading ? 'Finding Schemes...' : 'Get Recommendations'}
-                    </button>
-                  </form>
-
-                  {Array.isArray(results) && (
-                    <div>
-                      <h3>Recommended Schemes ({results.length})</h3>
-                      {results.length === 0 ? (
-                        <div style={{ padding: '1rem', background: '#fff3cd', borderRadius: '4px', color: '#856404' }}>
-                          <strong>No schemes found.</strong> Try adjusting your criteria or leaving some fields blank for broader results.
-                        </div>
-                      ) : (
-                        <div>
-                          {results.map((r) => (
-                            <div key={r.id} style={{ 
-                              marginBottom: '1.5rem', 
-                              padding: '1rem', 
-                              border: '1px solid #ddd', 
-                              borderRadius: '6px',
-                              background: '#f9f9f9'
-                            }}>
-                              <Link to={`/schemes/${r.id}`} style={{ textDecoration: 'none' }}>
-                                <h4 style={{ margin: '0 0 0.5rem 0', color: '#0066cc' }}>{r.title}</h4>
-                              </Link>
-                              
-                              <p style={{ fontSize: '0.9rem', color: '#555', marginBottom: '0.75rem' }}>
-                                {r.description}
-                              </p>
-                              
-                              <div style={{ marginBottom: '0.5rem' }}>
-                                {r.schemeCategory && (
-                                  <span style={{ 
-                                    fontSize: '0.75rem', 
-                                    background: '#e0e0e0', 
-                                    padding: '3px 8px', 
-                                    borderRadius: '4px', 
-                                    marginRight: '6px',
-                                    display: 'inline-block'
-                                  }}>
-                                    📁 {r.schemeCategory}
-                                  </span>
-                                )}
-                                {r.level && (
-                                  <span style={{ 
-                                    fontSize: '0.75rem', 
-                                    background: '#d1e7dd', 
-                                    padding: '3px 8px', 
-                                    borderRadius: '4px',
-                                    display: 'inline-block'
-                                  }}>
-                                    📍 {r.level}
-                                  </span>
-                                )}
-                              </div>
-
-                              {(r.tags && r.tags.length > 0) && (
-                                <div style={{ marginTop: '0.5rem' }}>
-                                  <small style={{ color: '#666', fontWeight: '600' }}>Tags: </small>
-                                  {r.tags.map((tag: string, idx: number) => (
-                                    <span key={idx} style={{ 
-                                      fontSize: '0.7rem', 
-                                      background: '#fff', 
-                                      border: '1px solid #ccc',
-                                      padding: '2px 6px', 
-                                      borderRadius: '3px', 
-                                      marginRight: '4px',
-                                      display: 'inline-block',
-                                      marginTop: '3px'
-                                    }}>
-                                      {tag}
-                                    </span>
-                                  ))}
-                                </div>
-                              )}
-
-                              {(r.benefits && r.benefits.length > 0) && (
-                                <div style={{ marginTop: '0.5rem' }}>
-                                  <small style={{ color: '#666', fontWeight: '600' }}>Benefits: </small>
-                                  {r.benefits.map((benefit: string, idx: number) => (
-                                    <span key={idx} style={{ 
-                                      fontSize: '0.7rem', 
-                                      background: '#d4edda', 
-                                      border: '1px solid #c3e6cb',
-                                      padding: '2px 6px', 
-                                      borderRadius: '3px', 
-                                      marginRight: '4px',
-                                      display: 'inline-block',
-                                      marginTop: '3px'
-                                    }}>
-                                      ✓ {benefit}
-                                    </span>
-                                  ))}
-                                </div>
-                              )}
-                            </div>
-                          ))}
-                        </div>
+                    <div style={{ display: 'flex', gap: '1rem' }}>
+                      <button type="submit" disabled={loading}>
+                        {loading ? 'Filtering...' : 'Apply Filters'}
+                      </button>
+                      {isFiltered && (
+                        <button type="button" onClick={clearFilters} style={{ background: '#6c757d' }}>
+                          Clear Filters
+                        </button>
                       )}
                     </div>
-                  )}
+                  </form>
+
+                  <div style={{ marginTop: '2rem' }}>
+                    <h3>
+                      {isFiltered ? `Recommended Schemes (${displayedSchemes.length})` : `All Schemes (${displayedSchemes.length})`}
+                    </h3>
+                    
+                    {displayedSchemes.length === 0 ? (
+                      <div style={{ padding: '1rem', background: '#fff3cd', borderRadius: '4px', color: '#856404' }}>
+                        <strong>No schemes found.</strong> Try adjusting your criteria or clearing filters.
+                      </div>
+                    ) : (
+                      <>
+                        <SchemeList schemes={currentSchemes} />
+                        
+                        {totalPages > 1 && (
+                          <div style={{ 
+                            display: 'flex', 
+                            justifyContent: 'center', 
+                            alignItems: 'center', 
+                            gap: '1rem', 
+                            marginTop: '2rem',
+                            padding: '1rem'
+                          }}>
+                            <button 
+                              onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                              disabled={currentPage === 1}
+                              style={{ padding: '0.5rem 1rem' }}
+                            >
+                              ← Previous
+                            </button>
+                            <span style={{ fontSize: '0.9rem', color: '#666' }}>
+                              Page {currentPage} of {totalPages}
+                            </span>
+                            <button 
+                              onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                              disabled={currentPage === totalPages}
+                              style={{ padding: '0.5rem 1rem' }}
+                            >
+                              Next →
+                            </button>
+                          </div>
+                        )}
+                      </>
+                    )}
+                  </div>
                 </section>
               </main>
             }
           />
 
-          <Route path="/schemes/:id" element={<SchemeDetail schemes={schemes} />} />
+          <Route path="/schemes/:id" element={<SchemeDetail schemes={allSchemes} />} />
         </Routes>
 
         <footer>

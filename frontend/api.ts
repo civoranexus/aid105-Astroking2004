@@ -27,6 +27,6 @@ export async function getSchemes(): Promise<Scheme[]> {
 }
 
 export async function getRecommendations(user: any): Promise<Scheme[]> {
-  const res = await api.post('/recommendations', user)
+  const res = await api.post('/recommendations?top_k=200', user)
   return Array.isArray(res.data) ? res.data : (res.data?.recommendations || [])
 }
