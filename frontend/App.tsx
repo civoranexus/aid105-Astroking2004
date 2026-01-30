@@ -137,7 +137,7 @@ export default function App() {
 
                   <div style={{ marginTop: '2rem' }}>
                     <h3>
-                      {isFiltered ? `Recommended Schemes (${displayedSchemes.length})` : `All Schemes (${displayedSchemes.length})`}
+                      {isFiltered ? 'Recommended Schemes' : `All Schemes (${displayedSchemes.length})`}
                     </h3>
                     
                     {displayedSchemes.length === 0 ? (

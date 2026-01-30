@@ -190,7 +190,7 @@ def recommendations(user: UserProfile, request: Request, top_k: int = 5):
     for r in results[:top_k]:
         transformed.append({
             "id": r.get("scheme_id") or r.get("id"),
-            "name": r.get("title"),
+            "title": r.get("title"),
             "description": r.get("description"),
             "eligibility": r.get("eligibility"),
             "application": r.get("application"),

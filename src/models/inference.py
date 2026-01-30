@@ -21,17 +21,29 @@ def score_schemes(user_data: Dict[str, Any], schemes: List[Dict[str, Any]]) -> L
         
         # 1. Basic Filtering (Hard Constraints)
         
-        # Check State Eligibility - only filter OUT if user provided state and it doesn't match
+        # Check State Eligibility
         eligible_states = scheme.get("eligible_states") or []
         # Normalize state names to lowercase for comparison
         eligible_states_lower = [s.lower().strip() for s in eligible_states]
-        
-        # If user provided state AND scheme has state restrictions, check eligibility
-        if user_state and eligible_states_lower:
+
+        if user_state:
             user_state_normalized = user_state.lower().strip()
-            if user_state_normalized not in eligible_states_lower:
-                continue
-        # If no state provided OR scheme has no restrictions, allow it through
+            level = (scheme.get("level") or "").lower().strip()
+            scheme_text = f"{scheme.get('title', '')} {scheme.get('description', '')}".lower()
+
+            # If scheme has state restrictions, user's state must be in the list
+            if eligible_states_lower:
+                if user_state_normalized not in eligible_states_lower:
+                    continue
+            else:
+                # No explicit state list: allow Central/National schemes
+                if level in {"central", "national"}:
+                    pass
+                else:
+                    # For State-level schemes without explicit states, try to infer from text
+                    if user_state_normalized not in scheme_text:
+                        continue
+        # If no state provided, show all schemes
 
         # Check Income Eligibility - only filter OUT if user provided income and it doesn't match
         inc_min = scheme.get("eligible_income_min")
