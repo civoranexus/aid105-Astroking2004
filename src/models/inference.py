@@ -1,11 +1,16 @@
 from typing import List, Dict, Any
 
-def score_schemes(user_data: Dict[str, Any], schemes: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+def score_schemes(user_data: Dict[str, Any], schemes: List[Dict[str, Any]], include_central: bool = True) -> List[Dict[str, Any]]:
     """
     Scores and filters schemes based on user profile criteria.
     Factors used:
-    - Hard filters: state, income range
+    - Hard filters: state, income range, scheme level (optional)
     - Soft scoring: matching between user needs and scheme tags/benefits
+    
+    Args:
+        user_data: User profile information
+        schemes: List of schemes to score
+        include_central: If True, include central/national schemes; if False, exclude them
     """
     scored_results = []
 
@@ -20,6 +25,11 @@ def score_schemes(user_data: Dict[str, Any], schemes: List[Dict[str, Any]]) -> L
         score = 0
         
         # 1. Basic Filtering (Hard Constraints)
+        
+        # Filter by scheme level if include_central is False
+        level = (scheme.get("level") or "").lower().strip()
+        if not include_central and level in {"central", "national"}:
+            continue
         
         # Check State Eligibility
         eligible_states = scheme.get("eligible_states") or []

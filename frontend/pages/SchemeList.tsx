@@ -3,6 +3,13 @@ import { Link } from 'react-router-dom'
 import { Scheme } from '../api'
 
 export default function SchemeList({ schemes }: { schemes: Scheme[] }) {
+  const maxDescriptionLength = 260
+  const getShortDescription = (text?: string) => {
+    if (!text) return ''
+    if (text.length <= maxDescriptionLength) return text
+    return `${text.slice(0, maxDescriptionLength).trim()}…`
+  }
+
   return (
     <div>
       {schemes.map((s) => (
@@ -18,7 +25,7 @@ export default function SchemeList({ schemes }: { schemes: Scheme[] }) {
           </Link>
           
           <p style={{ fontSize: '0.9rem', color: '#555', marginBottom: '0.75rem' }}>
-            {s.description}
+            {getShortDescription(s.description)}
           </p>
           
           <div style={{ marginBottom: '0.5rem' }}>

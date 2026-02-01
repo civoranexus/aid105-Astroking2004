@@ -43,7 +43,6 @@ def import_csv_to_json():
                     "tags": parse_list(row.get("tags", "")),
                     "benefits": [row.get("benefits", "").strip()] if row.get("benefits", "").strip() else [],
                     "documents": parse_list(row.get("documents", "")),
-                    "apply_url": "",
                     "eligibility": row.get("eligibility", "").strip(),
                     "application": row.get("application", "").strip(),
                     "level": row.get("level", "").strip(),

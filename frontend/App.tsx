@@ -11,6 +11,7 @@ export default function App() {
   const [userIncome, setUserIncome] = useState<number | ''>('')
   const [userState, setUserState] = useState<string>('')
   const [userNeedsText, setUserNeedsText] = useState<string>('')
+  const [includeCentral, setIncludeCentral] = useState<boolean>(true)
   const [isFiltered, setIsFiltered] = useState(false)
   const [currentPage, setCurrentPage] = useState(1)
   const schemesPerPage = 20
@@ -40,7 +41,7 @@ export default function App() {
               .filter(Boolean)
           : []
       }
-      const recs = await getRecommendations(user)
+      const recs = await getRecommendations(user, includeCentral)
       setDisplayedSchemes(recs)
       setIsFiltered(true)
     } catch (err) {
@@ -55,6 +56,7 @@ export default function App() {
     setUserIncome('')
     setUserState('')
     setUserNeedsText('')
+    setIncludeCentral(true)
     setDisplayedSchemes(allSchemes)
     setIsFiltered(false)
     setCurrentPage(1)
@@ -76,7 +78,7 @@ export default function App() {
               <Link to="/">SchemeAssist</Link>
             </h1>
           </div>
-          <p>Browse schemes and get recommendations.</p>
+          <p>Browse Government of India schemes(both State and Central) and get personalized scheme recommendations.</p>
         </header>
 
         <Routes>
@@ -123,6 +125,18 @@ export default function App() {
                       />
                       <small style={{ fontSize: '0.8rem', color: '#888' }}>Optional - helps prioritize relevant schemes</small>
                     </label>
+                    <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer' }}>
+                      <input
+                        type="checkbox"
+                        checked={includeCentral}
+                        onChange={(e) => setIncludeCentral(e.target.checked)}
+                        style={{ cursor: 'pointer' }}
+                      />
+                      <span>Include Central/National schemes</span>
+                      <small style={{ fontSize: '0.8rem', color: '#888', marginLeft: '0.5rem' }}>
+                        (Uncheck to see only state-specific schemes)
+                      </small>
+                    </label>
                     <div style={{ display: 'flex', gap: '1rem' }}>
                       <button type="submit" disabled={loading}>
                         {loading ? 'Filtering...' : 'Apply Filters'}
@@ -155,7 +169,8 @@ export default function App() {
                             alignItems: 'center', 
                             gap: '1rem', 
                             marginTop: '2rem',
-                            padding: '1rem'
+                            padding: '1rem',
+                            flexWrap: 'wrap'
                           }}>
                             <button 
                               onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
@@ -167,6 +182,21 @@ export default function App() {
                             <span style={{ fontSize: '0.9rem', color: '#666' }}>
                               Page {currentPage} of {totalPages}
                             </span>
+                            <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                              <span style={{ fontSize: '0.85rem', color: '#666' }}>Go to page</span>
+                              <input
+                                type="number"
+                                min={1}
+                                max={totalPages}
+                                value={currentPage}
+                                onChange={(e) => {
+                                  const next = Number(e.target.value)
+                                  if (Number.isNaN(next)) return
+                                  setCurrentPage(Math.min(Math.max(1, next), totalPages))
+                                }}
+                                style={{ width: '5rem', padding: '0.4rem 0.5rem' }}
+                              />
+                            </label>
                             <button 
                               onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
                               disabled={currentPage === totalPages}

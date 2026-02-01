@@ -91,7 +91,6 @@ class SchemeIn(BaseModel):
     tags: Optional[List[str]] = None
     benefits: Optional[List[str]] = None
     documents: Optional[List[str]] = None
-    apply_url: Optional[str] = None
 
 
 class ChatRequest(BaseModel):
@@ -141,7 +140,29 @@ def get_schemes(request: Request):
                     raise HTTPException(status_code=503, detail="Schemes data not loaded. Run import_schemes.py.")
             else:
                 raise HTTPException(status_code=503, detail="Schemes data not loaded. Run import_schemes.py.")
-        return schemes
+        def scheme_richness(s: dict) -> int:
+            score = 0
+            if s.get("eligibility"):
+                score += 2
+            if s.get("application"):
+                score += 2
+            if s.get("level"):
+                score += 1
+            if s.get("schemeCategory"):
+                score += 1
+            if s.get("tags"):
+                score += 1
+            if s.get("benefits"):
+                score += 1
+            if s.get("documents"):
+                score += 1
+            description = s.get("description") or ""
+            if len(description) > 120:
+                score += 1
+            return score
+
+        schemes_sorted = sorted(schemes, key=scheme_richness, reverse=True)
+        return schemes_sorted
     except HTTPException:
         raise
     except Exception as e:
@@ -150,7 +171,7 @@ def get_schemes(request: Request):
 
 
 @app.post("/recommendations")
-def recommendations(user: UserProfile, request: Request, top_k: int = 5):
+def recommendations(user: UserProfile, request: Request, top_k: int = 5, include_central: bool = True):
     # Standardize on model_dump for Pydantic v2
     user_data = user.model_dump()
     
@@ -164,7 +185,7 @@ def recommendations(user: UserProfile, request: Request, top_k: int = 5):
     user_needs = user_data.get('needs', [])
     logger.info(
         f"Processing recommendations for user: {user_name} "
-        f"(Income: {user_income}, State: {user_state}, Needs: {user_needs})"
+        f"(Income: {user_income}, State: {user_state}, Needs: {user_needs}, Include Central: {include_central})"
     )
 
     # Use JSON schemes loaded in memory (primary source)
@@ -182,7 +203,7 @@ def recommendations(user: UserProfile, request: Request, top_k: int = 5):
     all_schemes = standardized_json
     logger.info(f"Total schemes to score: {len(all_schemes)}")
     
-    results = score_schemes(user_data, all_schemes)
+    results = score_schemes(user_data, all_schemes, include_central=include_central)
     logger.info(f"Found {len(results)} recommendations")
     
     # Transform results to match frontend expectations
