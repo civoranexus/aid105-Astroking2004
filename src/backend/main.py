@@ -7,6 +7,7 @@ import logging
 from pathlib import Path
 from contextlib import asynccontextmanager
 import sys
+import os
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 
@@ -59,9 +60,21 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(title="SchemeAssist AI - Backend", version="0.1", lifespan=lifespan)
 
+# CORS configuration for Render deployment
+origins = [
+    "http://localhost:5173",  # Local development - Vite default
+    "http://localhost:3000",  # Alternative local dev port
+    "http://localhost:8000",  # Local backend
+    "https://*.onrender.com",  # Render services
+    os.getenv("FRONTEND_URL", ""),  # Custom frontend URL from environment
+]
+
+# Remove empty strings from origins
+origins = [origin for origin in origins if origin]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Allows all origins for development
+    allow_origins=origins if not os.getenv("ALLOW_ALL_ORIGINS") else ["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

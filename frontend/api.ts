@@ -1,6 +1,7 @@
 import axios from 'axios'
+import { config } from './src/config'
 
-const api = axios.create({ baseURL: '/api' })
+const api = axios.create({ baseURL: config.apiUrl || '/api' })
 
 export interface Scheme {
   id: string
