@@ -72,9 +72,13 @@ origins = [
 # Remove empty strings from origins
 origins = [origin for origin in origins if origin]
 
+# Parse ALLOW_ALL_ORIGINS as an explicit boolean
+allow_all_env = os.getenv("ALLOW_ALL_ORIGINS", "").strip().lower()
+allow_all = allow_all_env in ("1", "true", "yes")
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins if not os.getenv("ALLOW_ALL_ORIGINS") else ["*"],
+    allow_origins=["*"] if allow_all else origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

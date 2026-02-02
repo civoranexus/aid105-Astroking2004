@@ -14,8 +14,6 @@ services:
           property: connectionString
       - key: PYTHONUNBUFFERED
         value: "1"
-      - key: ALLOW_ALL_ORIGINS
-        value: "false"
 
   - type: web
     name: schemeassist-frontend
