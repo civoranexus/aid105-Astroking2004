@@ -12,7 +12,7 @@ def parse_db_url(url: str):
     return host, port
 
 
-def wait_for(host: str, port: int, timeout: int = 30):
+def wait_for(host: str, port: int, timeout: int = 120):
     start = time.time()
     while True:
         try:
@@ -27,7 +27,7 @@ def wait_for(host: str, port: int, timeout: int = 30):
 def main():
     db_url = os.environ.get("DATABASE_URL") or "postgresql://civora:civora@db:5432/schemeassist"
     host, port = parse_db_url(db_url)
-    ok = wait_for(host, port, timeout=30)
+    ok = wait_for(host, port, timeout=120)
     if not ok:
         print(f"WARNING: DB at {host}:{port} not ready after timeout")
     else:

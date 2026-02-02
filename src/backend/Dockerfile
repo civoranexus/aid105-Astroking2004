@@ -11,6 +11,10 @@ COPY src/backend/requirements.txt /app/requirements.txt
 RUN python -m pip install --upgrade pip && \
 	pip install --no-cache-dir -r /app/requirements.txt
 
+# Copy Alembic config and migration scripts so alembic can run
+COPY alembic.ini /app/alembic.ini
+COPY alembic /app/alembic
+
 # Copy application code
 COPY src /app/src
 
