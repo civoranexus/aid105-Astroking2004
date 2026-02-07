@@ -1,6 +1,6 @@
 import os
 from dotenv import load_dotenv
-import google.generativeai as genai
+from google import genai
 from typing import List, Dict, Any
 
 load_dotenv()
