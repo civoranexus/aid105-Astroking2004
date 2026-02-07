@@ -1,0 +1,63 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  python-check:
+    runs-on: ubuntu-latest
+    env:
+      DATABASE_URL: sqlite:///./.data/ci_test.db
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - name: Cache pip
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('src/backend/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+      - name: Install backend deps
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r src/backend/requirements.txt
+          pip install google-genai python-dotenv flake8 pytest httpx autopep8
+      - name: Format with autopep8
+        run: |
+          autopep8 --in-place --recursive --aggressive --aggressive src tests
+      - name: Lint with flake8
+        run: |
+          python -m flake8 src tests --max-line-length=120 --extend-ignore=E402,W503
+      - name: Run tests
+        run: |
+          PYTHONWARNINGS=error,ignore::DeprecationWarning python -m pytest tests/ -v --tb=short
+      - name: Import sanity check
+        run: |
+          python -c "import importlib, sys; sys.path.append('src'); importlib.import_module('backend.main'); print('import ok')"
+
+  frontend-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: frontend/package.json
+      - name: Install dependencies
+        working-directory: frontend
+        run: npm ci
+      - name: Run unit tests (vitest)
+        working-directory: frontend
+        run: npm run test -- --run
+      - name: Build (Vite)
+        working-directory: frontend
+        run: npm run build

@@ -1,0 +1,30 @@
+:root{
+  --bg:#f7f8fb;
+  --card:#ffffff;
+  --muted:#666;
+  --accent:#0b63ff;
+}
+html,body,#root{height:100%}
+body{
+  margin:0;padding:20px;font-family:Inter, ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue';background:var(--bg);
+}
+.app{max-width:880px;margin:0 auto}
+header{display:flex;flex-direction:column;gap:8px;margin-bottom:24px}
+.header-left{display:flex;align-items:center;gap:12px}
+.logo{height:60px;width:60px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.logo img{height:100%;width:100%;object-fit:contain;display:block}
+header h1{margin:0;font-size:2rem;font-weight:700}
+header h1 a{text-decoration:none;color:var(--accent)}
+header h1 a:hover{opacity:0.8}
+header p{margin:0;color:var(--muted);font-size:0.95rem}
+section{background:var(--card);padding:16px;border-radius:8px;margin:12px 0;box-shadow:0 1px 2px rgba(0,0,0,0.04)}
+ul{padding-left:1.1rem}
+li{margin:.6rem 0}
+.muted{color:var(--muted);font-size:0.95rem}
+.form{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+label{display:flex;align-items:center;gap:8px}
+label input{padding:6px;border-radius:6px;border:1px solid #ddd}
+button{background:var(--accent);color:white;border:none;padding:8px 12px;border-radius:6px;cursor:pointer}
+button:hover{opacity:0.9}
+button:disabled{opacity:0.6;cursor:not-allowed}
+footer{margin-top:40px;text-align:center;color:var(--muted);font-size:0.9rem}

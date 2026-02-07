@@ -1,0 +1,79 @@
+{
+  "palettes": [
+    {
+      "title": "Brand Core",
+      "colors": [
+        {
+          "name": "Primary Teal",
+          "hex": "#1B9AAA",
+          "rgb": "rgb(27,154,170)",
+          "usage": "Accents, links"
+        },
+        {
+          "name": "Teal Dark",
+          "hex": "#16808D",
+          "rgb": "rgb(22,128,141)",
+          "usage": "Primary buttons"
+        },
+        {
+          "name": "Navy Core",
+          "hex": "#142C52",
+          "rgb": "rgb(20,44,82)",
+          "usage": "Headers, navigation"
+        }
+      ]
+    },
+    {
+      "title": "Neutral",
+      "colors": [
+        {
+          "name": "Text Dark",
+          "hex": "#071426",
+          "rgb": "rgb(7,20,38)",
+          "usage": "Body text"
+        },
+        {
+          "name": "Background",
+          "hex": "#F4F7FA",
+          "rgb": "rgb(244,247,250)",
+          "usage": "Page backgrounds"
+        },
+        {
+          "name": "Surface",
+          "hex": "#FFFFFF",
+          "rgb": "rgb(255,255,255)",
+          "usage": "Cards, modals"
+        }
+      ]
+    },
+    {
+      "title": "Feedback",
+      "colors": [
+        {
+          "name": "Success",
+          "hex": "#22C55E",
+          "rgb": "rgb(34,197,94)",
+          "usage": "Success states"
+        },
+        {
+          "name": "Success Dark",
+          "hex": "#178740",
+          "rgb": "rgb(23,135,64)",
+          "usage": "Success buttons"
+        },
+        {
+          "name": "Alert",
+          "hex": "#EF4444",
+          "rgb": "rgb(239,68,68)",
+          "usage": "Error states"
+        },
+        {
+          "name": "Alert Dark",
+          "hex": "#EB1414",
+          "rgb": "rgb(235,20,20)",
+          "usage": "Destructive actions"
+        }
+      ]
+    }
+  ]
+}
